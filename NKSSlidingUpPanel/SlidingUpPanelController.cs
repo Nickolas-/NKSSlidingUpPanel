@@ -4,8 +4,9 @@ using UIKit;
 
 namespace NKSSlidingUpPanel
 {
-	public class SlidingUpPanelController : UIViewController , IUIGestureRecognizerDelegate
+	public class SlidingUpPanelController : UIViewController, IUIGestureRecognizerDelegate
 	{
+		private bool _isCleanedUp;
 		private bool _isInitedTouch;
 		private bool _dropShadow;
 		private bool _isDraggingEnabled;
@@ -346,7 +347,7 @@ namespace NKSSlidingUpPanel
 				this._shouldDrag = true;
 				this._isInitedTouch = true;
 				return;
-			} 
+			}
 
 			if (gesture.State == UIGestureRecognizerState.Began) {
 				this._touchPointOffset = gesture.LocationInView (this._panelView);
@@ -371,7 +372,7 @@ namespace NKSSlidingUpPanel
 						InstallPanelViewControllerConstraintToBottom ();
 						this._isInitedTouch = false;
 					}
-					VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsDragging);;
+					VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsDragging); ;
 					nfloat offset = NMath.Max (ShouldOverlapMainView ? 0f : VisibleZoneHeight, this._panelView.Frame.Size.Height - gesture.LocationInView (this.View).Y + this._touchPointOffset.Y);
 					UpdateFrameBottomOffset (NMath.Min (offset, this._panelView.Frame.Size.Height));
 				}
@@ -385,13 +386,14 @@ namespace NKSSlidingUpPanel
 			return IsPanelViewScrollView &&
 				(VisibilityViewState == VisibilityViewState.VisibilityStateMaximized || VisibilityViewState == VisibilityViewState.VisibilityStateIsMinimizing || VisibilityViewState == VisibilityViewState.VisibilityStateIsDragging) &&
 														  (gestureRecognizer == PanGestureRecognizer || gestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer) &&
-				                                          (otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer);
+														  (otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer);
 		}
 
 		public override void DidMoveToParentViewController (UIViewController parent)
 		{
-			if (parent == null) {
+			if (parent == null && !this._isCleanedUp) {
 				CleanUp ();
+				this._isCleanedUp = true;
 			}
 			base.DidMoveToParentViewController (parent);
 		}
@@ -399,6 +401,7 @@ namespace NKSSlidingUpPanel
 		protected virtual void CleanUp ()
 		{
 			PanGestureRecognizer.RemoveTarget (_panGestureToken);
+			PanGestureRecognizer.Delegate = null;
 			if (MainView != null) {
 				MainView.RemoveFromSuperview ();
 			}
@@ -407,5 +410,5 @@ namespace NKSSlidingUpPanel
 				PanelView.RemoveGestureRecognizer (PanGestureRecognizer);
 			}
 		}
-}
+	}
 }
