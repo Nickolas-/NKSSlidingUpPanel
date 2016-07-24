@@ -20,7 +20,7 @@ namespace SlidingDemo
 			// Override point for customization after application launch.
 			// If not required for your application you can safely delete this method
 			var controller = new NKSSlidingUpPanel.SlidingUpPanelController ();
-			controller.MainView = new UIView () { BackgroundColor = UIColor.Yellow };
+			controller.MainView = new UIView () { BackgroundColor = UIColor.LightGray };
 			var viewTable = new CustomTableView ();
 			viewTable.Bounces = false;
 			viewTable.WeakDataSource = viewTable;
