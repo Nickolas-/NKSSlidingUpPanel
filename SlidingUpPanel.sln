@@ -5,6 +5,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlidingDemo", "SlidingDemo\
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NKSSlidingUpPanel", "NKSSlidingUpPanel\NKSSlidingUpPanel.csproj", "{08E76D19-40B9-4138-B99F-424AF09E2432}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxNKSSlidingUpPanel", "MvxNKSSlidingUpPanel\MvxNKSSlidingUpPanel.csproj", "{49E5E1EB-0092-422A-921F-171B204D71CB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -29,5 +31,13 @@ Global
 		{08E76D19-40B9-4138-B99F-424AF09E2432}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{08E76D19-40B9-4138-B99F-424AF09E2432}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{08E76D19-40B9-4138-B99F-424AF09E2432}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Release|iPhone.Build.0 = Release|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal
