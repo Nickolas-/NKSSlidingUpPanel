@@ -50,7 +50,7 @@ namespace MvxNKSSlidingUpPanel
 		public VisibilityViewState VisibilityViewState { get; protected set; }
 		public UIPanGestureRecognizer PanGestureRecognizer { get; protected set; }
 
-		private bool IsPanelViewControllerScrollView { get { return _panelViewController is MvxTableViewController; } }
+		private bool IsPanelViewControllerScrollView { get { return _panelViewController is UITableViewController; } }
 
 		public nfloat AnimationDuration { get; set; }
 
@@ -365,7 +365,7 @@ namespace MvxNKSSlidingUpPanel
 
 		private void HandleGesture (UIPanGestureRecognizer gesture)
 		{
-			if (IsPanelViewControllerScrollView && (this._panelViewController as MvxTableViewController).TableView.ContentOffset.Y > 0 && VisibilityViewState == VisibilityViewState.VisibilityStateMaximized) {
+			if (IsPanelViewControllerScrollView && (this._panelViewController as UITableViewController).TableView.ContentOffset.Y > 0 && VisibilityViewState == VisibilityViewState.VisibilityStateMaximized) {
 				this._touchPointOffset = gesture.LocationInView (this._panelViewController.View);
 				this._shouldDrag = true;
 				this._isInitedTouch = true;
@@ -408,8 +408,8 @@ namespace MvxNKSSlidingUpPanel
 		{
 			return IsPanelViewControllerScrollView &&
 				(VisibilityViewState == VisibilityViewState.VisibilityStateMaximized || VisibilityViewState == VisibilityViewState.VisibilityStateIsMinimizing || VisibilityViewState == VisibilityViewState.VisibilityStateIsDragging) &&
-				(gestureRecognizer == PanGestureRecognizer || gestureRecognizer == (this._panelViewController as MvxTableViewController).TableView.PanGestureRecognizer) &&
-				(otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (this._panelViewController as MvxTableViewController).TableView.PanGestureRecognizer);
+				(gestureRecognizer == PanGestureRecognizer || gestureRecognizer == (this._panelViewController as UITableViewController).TableView.PanGestureRecognizer) &&
+				(otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (this._panelViewController as UITableViewController).TableView.PanGestureRecognizer);
 		}
 
 		public override void DidMoveToParentViewController (UIViewController parent)

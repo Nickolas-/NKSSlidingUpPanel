@@ -97,10 +97,10 @@ namespace MvxSlidingUpPanel
 			base.ViewDidLoad ();
 			var controllerMain = new UIViewController ();
 			controllerMain.View.BackgroundColor = UIColor.LightGray;
-			//var panelController = new MvxCustomTalbeViewController ();
-			//panelController.ViewModel = ViewModel.SecondVM;
-			var panelController = new UIViewController ();
-			panelController.View.BackgroundColor = UIColor.Red;
+			var panelController = new MvxCustomTalbeViewController ();
+			panelController.ViewModel = ViewModel.SecondVM;
+			//var panelController = new UIViewController ();
+			//panelController.View.BackgroundColor = UIColor.Red;
 			MainViewController = controllerMain;
 			PanelViewController = panelController;
 
