@@ -6,7 +6,7 @@ using UIKit;
 
 namespace MvxNKSSlidingUpPanel
 {
-	public class MvxSlidingUpPanelController : MvxViewController, IUIGestureRecognizerDelegate
+	public class MvxSlidingUpPanelControllerWithControllers : MvxViewController, IUIGestureRecognizerDelegate
 	{
 		private bool _isCleanedUp;
 		private bool _isInitedTouch;
@@ -22,27 +22,27 @@ namespace MvxNKSSlidingUpPanel
 		private bool _shouldShiftMainView;
 		private bool _shouldOverlapMainView;
 
-		private UIView _mainView;
-		private UIView _panelView;
+		private UIViewController _mainViewController;
+		private UIViewController _panelViewController;
 		private NSLayoutConstraint _mainViewTopConstraint;
 		private NSLayoutConstraint _mainViewHeightConstraint;
 		private NSLayoutConstraint _panelViewTopConstraint;
 		private UIGestureRecognizer.Token _panGestureToken;
 		private CoreGraphics.CGPoint _touchPointOffset;
 
-		public MvxSlidingUpPanelController ()
+		public MvxSlidingUpPanelControllerWithControllers () 
 		{
 
 		}
 
-		public MvxSlidingUpPanelController (IntPtr handle)
-            : base(handle)
-        {
+		public MvxSlidingUpPanelControllerWithControllers (IntPtr handle)
+			: base (handle)
+		{
 		}
 
-		protected MvxSlidingUpPanelController (string nibName, NSBundle bundle)
-            : base(nibName, bundle)
-        {
+		protected MvxSlidingUpPanelControllerWithControllers (string nibName, NSBundle bundle)
+			: base (nibName, bundle)
+		{
 		}
 
 		public event EventHandler<VisibilityViewStateEventArgs> OnVisibilityViewStateChanged;
@@ -50,9 +50,9 @@ namespace MvxNKSSlidingUpPanel
 		public VisibilityViewState VisibilityViewState { get; protected set; }
 		public UIPanGestureRecognizer PanGestureRecognizer { get; protected set; }
 
-		public nfloat AnimationDuration { get; set; }
+		private bool IsPanelViewControllerScrollView { get { return _panelViewController is MvxTableViewController; } }
 
-		private bool IsPanelViewScrollView { get { return _panelView is UIScrollView; } }
+		public nfloat AnimationDuration { get; set; }
 
 		public virtual bool ShouldShiftMainView {
 			get { return _shouldShiftMainView; }
@@ -101,78 +101,84 @@ namespace MvxNKSSlidingUpPanel
 			}
 		}
 
-		public virtual UIView MainView {
-			get { return _mainView; }
-			set { UpdateMainView (value); }
+		public virtual UIViewController MainViewController {
+			get { return _mainViewController; }
+			set { UpdateMainViewController (value); }
 		}
 
-		public virtual UIView PanelView {
-			get { return _panelView; }
-			set { UpdatePanelView (value); }
+		public virtual UIViewController PanelViewController {
+			get { return _panelViewController; }
+			set { UpdatePanelViewController (value); }
 		}
 
-		private void UpdateMainView (UIView newManinView)
+		private void UpdateMainViewController (UIViewController newManinViewController)
 		{
-			if (newManinView == null) {
+			if (newManinViewController == null) {
 				return;
 			}
 
-			if (this._mainView != null && this._mainView.Superview != null) {
-				this._mainView.RemoveFromSuperview ();
+			if (this._mainViewController != null && this._mainViewController.ParentViewController != null) {
+				this._mainViewController.RemoveFromParentViewController ();
+				if (_mainViewController.View.Superview != null) {
+					_mainViewController.View.RemoveFromSuperview ();
+				}
 			}
 
-			this._mainView = newManinView;
-			this.View.AddSubview (this._mainView);
+			this._mainViewController = newManinViewController;
+			this.AddChildViewController (this._mainViewController);
+			this.View.AddSubview (this._mainViewController.View);
 
-			UpdateMainViewConstraints ();
-
-			if (this._panelView != null) {
-				this.View.BringSubviewToFront (this._panelView);
+			UpdateMainViewControllerConstraints ();
+			if (this._panelViewController != null && this._panelViewController.View != null) {
+				this.View.BringSubviewToFront (this._panelViewController.View);
 			}
 		}
 
-		private void UpdatePanelView (UIView newPanelView)
+		private void UpdatePanelViewController (UIViewController newPanelViewController)
 		{
-			if (newPanelView == null) {
+			if (newPanelViewController == null) {
 				return;
 			}
 
-			if (this._panelView != null && this._panelView.Superview != null) {
-				this._panelView.RemoveFromSuperview ();
+			if (this._panelViewController != null && this._mainViewController.ParentViewController != null) {
+				this._panelViewController.RemoveFromParentViewController ();
+				if (_panelViewController.View.Superview != null) {
+					_mainViewController.View.RemoveFromSuperview ();
+				}
 			}
 
-			this._panelView = newPanelView;
-			this.View.AddSubview (this._panelView);
+			this._panelViewController = newPanelViewController;
+			this.View.AddSubview (this._panelViewController.View);
 
-			UpdatePanelViewConstraints ();
+			UpdatePanelViewControllerConstraints ();
 			UpdateFrameBottomOffset (VisibleZoneHeight);
 			VisibilityViewState = VisibilityViewState.VisibilityStateMinimized;
 			UpdateShadow ();
 			DraggingEnabled ();
 		}
 
-		private void UpdateMainViewConstraints ()
+		private void UpdateMainViewControllerConstraints ()
 		{
-			this._mainView.TranslatesAutoresizingMaskIntoConstraints = false;
+			this._mainViewController.View.TranslatesAutoresizingMaskIntoConstraints = false;
 
-			this._mainViewTopConstraint = NSLayoutConstraint.Create (this._mainView, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
-			this._mainViewHeightConstraint = NSLayoutConstraint.Create (this._mainView, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Height, 1, 0);
-			var left = NSLayoutConstraint.Create (this._mainView, NSLayoutAttribute.Left, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Left, 1, 0);
-			var width = NSLayoutConstraint.Create (this._mainView, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 1, 0);
+			this._mainViewTopConstraint = NSLayoutConstraint.Create (this._mainViewController.View, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
+			this._mainViewHeightConstraint = NSLayoutConstraint.Create (this._mainViewController.View, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Height, 1, 0);
+			var left = NSLayoutConstraint.Create (this._mainViewController.View, NSLayoutAttribute.Left, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Left, 1, 0);
+			var width = NSLayoutConstraint.Create (this._mainViewController.View, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 1, 0);
 
 			this.View.AddConstraints (new [] { _mainViewTopConstraint, _mainViewHeightConstraint, left, width });
 			this.View.LayoutIfNeeded ();
 		}
 
-		private void UpdatePanelViewConstraints ()
+		private void UpdatePanelViewControllerConstraints ()
 		{
-			this._panelView.TranslatesAutoresizingMaskIntoConstraints = false;
+			this._panelViewController.View.TranslatesAutoresizingMaskIntoConstraints = false;
 
-			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
-			var height = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Height, 1, 0);
-			var left = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Left, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Left, 1, 0);
-			var right = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Right, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Right, 1, 0);
-			var width = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 1, 0);
+			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
+			var height = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Height, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Height, 1, 0);
+			var left = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Left, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Left, 1, 0);
+			var right = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Right, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Right, 1, 0);
+			var width = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Width, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Width, 1, 0);
 
 			this.View.AddConstraints (new [] { _panelViewTopConstraint, height, left, right, width });
 			this.View.LayoutIfNeeded ();
@@ -180,7 +186,7 @@ namespace MvxNKSSlidingUpPanel
 
 		private void UpdateFrameBottomOffset (nfloat bottomOffset)
 		{
-			if (this._panelView != null && _panelView.Superview != null) {
+			if (this._panelViewController != null && _panelViewController.View.Superview != null) {
 				this._panelViewTopConstraint.Constant = -bottomOffset;
 				if (ShouldShiftMainView && VisibilityViewState != VisibilityViewState.VisibilityStateIsClosing) {
 					this._mainViewTopConstraint.Constant = -bottomOffset + VisibleZoneHeight;
@@ -200,25 +206,25 @@ namespace MvxNKSSlidingUpPanel
 		private void UpdateShadow ()
 		{
 			if (DropShadow) {
-				if (this._panelView != null && this._panelView.Superview != null) {
-					_panelView.Layer.MasksToBounds = false;
-					_panelView.Layer.ShadowOffset = new CoreGraphics.CGSize (0, 0);
-					_panelView.Layer.ShadowRadius = ShadowRadius > 0 ? ShadowRadius : 20.0f;
-					_panelView.Layer.ShadowOpacity = ShadowOpacity > 0 ? ShadowOpacity : 0.5f;
+				if (this._panelViewController != null && this._panelViewController.View.Superview != null) {
+					_panelViewController.View.Layer.MasksToBounds = false;
+					_panelViewController.View.Layer.ShadowOffset = new CoreGraphics.CGSize (0, 0);
+					_panelViewController.View.Layer.ShadowRadius = ShadowRadius > 0 ? ShadowRadius : 20.0f;
+					_panelViewController.View.Layer.ShadowOpacity = ShadowOpacity > 0 ? ShadowOpacity : 0.5f;
 				}
 			} else {
-				_panelView.Layer.MasksToBounds = false;
-				_panelView.Layer.ShadowOffset = new CoreGraphics.CGSize (0, 0);
-				_panelView.Layer.ShadowRadius = 0;
-				_panelView.Layer.ShadowOpacity = 0;
+				_panelViewController.View.Layer.MasksToBounds = false;
+				_panelViewController.View.Layer.ShadowOffset = new CoreGraphics.CGSize (0, 0);
+				_panelViewController.View.Layer.ShadowRadius = 0;
+				_panelViewController.View.Layer.ShadowOpacity = 0;
 			}
 		}
 
 		private void DraggingEnabled ()
 		{
 			if (!IsDraggingEnabled) {
-				if (PanGestureRecognizer != null && _panelView != null) {
-					_panelView.RemoveGestureRecognizer (PanGestureRecognizer);
+				if (PanGestureRecognizer != null && _panelViewController != null) {
+					_panelViewController.View.RemoveGestureRecognizer (PanGestureRecognizer);
 				}
 			} else {
 				if (PanGestureRecognizer == null) {
@@ -226,8 +232,8 @@ namespace MvxNKSSlidingUpPanel
 					_panGestureToken = PanGestureRecognizer.AddTarget (() => HandleGesture (PanGestureRecognizer));
 					PanGestureRecognizer.Delegate = this;
 				}
-				if (_panelView != null) {
-					_panelView.AddGestureRecognizer (PanGestureRecognizer);
+				if (_panelViewController != null) {
+					_panelViewController.View.AddGestureRecognizer (PanGestureRecognizer);
 				}
 			}
 		}
@@ -241,7 +247,7 @@ namespace MvxNKSSlidingUpPanel
 		private void UpdateVisibleZoneHeight (nfloat offset)
 		{
 			_visibleZoneHeight = NMath.Min (offset, this.View.Frame.Height);
-			UpdateFrameBottomOffset (_panelView.Frame.Location.Y);
+			UpdateFrameBottomOffset (_panelViewController.View.Frame.Location.Y);
 		}
 
 		private void UpdateShouldOverlapMainView (bool shouldOverlap)
@@ -267,14 +273,14 @@ namespace MvxNKSSlidingUpPanel
 		private void InstallPanelViewControllerConstraintToTop ()
 		{
 			this.View.RemoveConstraint (_panelViewTopConstraint);
-			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
+			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Top, 1, 0);
 			this.View.AddConstraint (_panelViewTopConstraint);
 		}
 
 		private void InstallPanelViewControllerConstraintToBottom ()
 		{
 			this.View.RemoveConstraint (_panelViewTopConstraint);
-			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelView, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Bottom, 1, -VisibleZoneHeight);
+			this._panelViewTopConstraint = NSLayoutConstraint.Create (this._panelViewController.View, NSLayoutAttribute.Top, NSLayoutRelation.Equal, this.View, NSLayoutAttribute.Bottom, 1, -VisibleZoneHeight);
 			this.View.AddConstraint (_panelViewTopConstraint);
 		}
 
@@ -298,7 +304,7 @@ namespace MvxNKSSlidingUpPanel
 			VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsMaximizing);
 			nfloat animationDuration = AnimationDuration > 0 ? AnimationDuration : 0.3f;
 
-			MovePanelControllerWithBottomOffset (this._panelView.Frame.Size.Height, animated, animationDuration, animation, (finished) => {
+			MovePanelControllerWithBottomOffset (this._panelViewController.View.Frame.Size.Height, animated, animationDuration, animation, (finished) => {
 
 				VisibilityViewStateChanged (VisibilityViewState.VisibilityStateMaximized);
 				InstallPanelViewControllerConstraintToTop ();
@@ -311,7 +317,7 @@ namespace MvxNKSSlidingUpPanel
 
 		public void MinimizePanelControllerAnimated (bool animated, Action animation, Action copmletion)
 		{
-			nfloat bottomOffset = this._panelViewTopConstraint.Constant == 0 ? VisibleZoneHeight - this._panelView.Frame.Size.Height : VisibleZoneHeight;
+			nfloat bottomOffset = this._panelViewTopConstraint.Constant == 0 ? VisibleZoneHeight - this._panelViewController.View.Frame.Size.Height : VisibleZoneHeight;
 			VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsMinimizing);
 			nfloat animationDuration = AnimationDuration > 0 ? AnimationDuration : 0.3f;
 			MovePanelControllerWithBottomOffset (bottomOffset, animated, animationDuration, animation, (finished) => {
@@ -330,7 +336,7 @@ namespace MvxNKSSlidingUpPanel
 			VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsClosing);
 			nfloat animationDuration = AnimationDuration > 0 ? AnimationDuration : 0.3f;
 
-			MovePanelControllerWithBottomOffset (-this._panelView.Frame.Size.Height, animated, animationDuration, animation, (finished) => {
+			MovePanelControllerWithBottomOffset (-this._panelViewController.View.Frame.Size.Height, animated, animationDuration, animation, (finished) => {
 
 				VisibilityViewStateChanged (VisibilityViewState.VisibilityStateClosed);
 
@@ -359,15 +365,15 @@ namespace MvxNKSSlidingUpPanel
 
 		private void HandleGesture (UIPanGestureRecognizer gesture)
 		{
-			if (IsPanelViewScrollView && (this._panelView as UIScrollView).ContentOffset.Y > 0 && VisibilityViewState == VisibilityViewState.VisibilityStateMaximized) {
-				this._touchPointOffset = gesture.LocationInView (this._panelView);
+			if (IsPanelViewControllerScrollView && (this._panelViewController as MvxTableViewController).TableView.ContentOffset.Y > 0 && VisibilityViewState == VisibilityViewState.VisibilityStateMaximized) {
+				this._touchPointOffset = gesture.LocationInView (this._panelViewController.View);
 				this._shouldDrag = true;
 				this._isInitedTouch = true;
 				return;
 			}
 
 			if (gesture.State == UIGestureRecognizerState.Began) {
-				this._touchPointOffset = gesture.LocationInView (this._panelView);
+				this._touchPointOffset = gesture.LocationInView (this._panelViewController.View);
 				this._shouldDrag = true;
 				InstallPanelViewControllerConstraintToBottom ();
 			}
@@ -385,13 +391,13 @@ namespace MvxNKSSlidingUpPanel
 				}
 			} else {
 				if (this._shouldDrag) {
-					if (IsPanelViewScrollView && this._isInitedTouch) {
+					if (IsPanelViewControllerScrollView && this._isInitedTouch) {
 						InstallPanelViewControllerConstraintToBottom ();
 						this._isInitedTouch = false;
 					}
 					VisibilityViewStateChanged (VisibilityViewState.VisibilityStateIsDragging); ;
-					nfloat offset = NMath.Max (ShouldOverlapMainView ? 0f : VisibleZoneHeight, this._panelView.Frame.Size.Height - gesture.LocationInView (this.View).Y + this._touchPointOffset.Y);
-					UpdateFrameBottomOffset (NMath.Min (offset, this._panelView.Frame.Size.Height));
+					nfloat offset = NMath.Max (ShouldOverlapMainView ? 0f : VisibleZoneHeight, this._panelViewController.View.Frame.Size.Height - gesture.LocationInView (this.View).Y + this._touchPointOffset.Y);
+					UpdateFrameBottomOffset (NMath.Min (offset, this._panelViewController.View.Frame.Size.Height));
 				}
 			}
 
@@ -400,10 +406,10 @@ namespace MvxNKSSlidingUpPanel
 		[Export ("gestureRecognizer:shouldRecognizeSimultaneouslyWithGestureRecognizer:")]
 		public bool ShouldRecognizeSimultaneously (UIGestureRecognizer gestureRecognizer, UIGestureRecognizer otherGestureRecognizer)
 		{
-			return IsPanelViewScrollView &&
+			return IsPanelViewControllerScrollView &&
 				(VisibilityViewState == VisibilityViewState.VisibilityStateMaximized || VisibilityViewState == VisibilityViewState.VisibilityStateIsMinimizing || VisibilityViewState == VisibilityViewState.VisibilityStateIsDragging) &&
-														  (gestureRecognizer == PanGestureRecognizer || gestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer) &&
-														  (otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer);
+				(gestureRecognizer == PanGestureRecognizer || gestureRecognizer == (this._panelViewController as MvxTableViewController).TableView.PanGestureRecognizer) &&
+				(otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (this._panelViewController as MvxTableViewController).TableView.PanGestureRecognizer);
 		}
 
 		public override void DidMoveToParentViewController (UIViewController parent)
@@ -419,31 +425,37 @@ namespace MvxNKSSlidingUpPanel
 		{
 			PanGestureRecognizer.RemoveTarget (_panGestureToken);
 			PanGestureRecognizer.Delegate = null;
-			if (MainView != null) {
-				MainView.RemoveFromSuperview ();
+			if (MainViewController != null) {
+				MainViewController.RemoveFromParentViewController ();
+				if (MainViewController.View != null && MainViewController.View.Superview != null) {
+					MainViewController.View.RemoveFromSuperview ();
+				}
 			}
-			if (PanelView != null) {
-				PanelView.RemoveFromSuperview ();
-				PanelView.RemoveGestureRecognizer (PanGestureRecognizer);
+			if (PanelViewController != null) {
+				PanelViewController.RemoveFromParentViewController ();
+				if (PanelViewController.View != null && PanelViewController.View.Superview != null) {
+					PanelViewController.View.RemoveFromSuperview ();
+					PanelViewController.View.RemoveGestureRecognizer (PanGestureRecognizer);
+				}
 			}
 		}
 	}
 
-	public class MvxSlidingUpPanelController<TViewModel>
-		: MvxSlidingUpPanelController
+	public class MvxSlidingUpPanelControllerWithControllers<TViewModel>
+		: MvxSlidingUpPanelControllerWithControllers
 		  , IMvxIosView<TViewModel> where TViewModel : class, IMvxViewModel
 	{
-		public MvxSlidingUpPanelController ()
+		public MvxSlidingUpPanelControllerWithControllers ()
 		{
 
 		}
 
-		public MvxSlidingUpPanelController (IntPtr handle)
+		public MvxSlidingUpPanelControllerWithControllers (IntPtr handle)
 			: base (handle)
 		{
 		}
 
-		protected MvxSlidingUpPanelController (string nibName, NSBundle bundle)
+		protected MvxSlidingUpPanelControllerWithControllers (string nibName, NSBundle bundle)
 			: base (nibName, bundle)
 		{
 		}

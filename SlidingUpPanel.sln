@@ -7,6 +7,10 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NKSSlidingUpPanel", "NKSSli
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxNKSSlidingUpPanel", "MvxNKSSlidingUpPanel\MvxNKSSlidingUpPanel.csproj", "{49E5E1EB-0092-422A-921F-171B204D71CB}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxSlidingUpPanel", "MvxSlidingUpPanel\MvxSlidingUpPanel.csproj", "{ABB72AC8-4309-440A-AF70-7E5E900261A9}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MvxSlidingUpPanel.Core", "MvxSlidingUpPanel.Core\MvxSlidingUpPanel.Core.csproj", "{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|iPhoneSimulator = Debug|iPhoneSimulator
@@ -39,5 +43,21 @@ Global
 		{49E5E1EB-0092-422A-921F-171B204D71CB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
 		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
 		{49E5E1EB-0092-422A-921F-171B204D71CB}.Debug|iPhone.Build.0 = Debug|Any CPU
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Debug|iPhoneSimulator.ActiveCfg = Debug|iPhoneSimulator
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Debug|iPhoneSimulator.Build.0 = Debug|iPhoneSimulator
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Release|iPhone.ActiveCfg = Release|iPhone
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Release|iPhone.Build.0 = Release|iPhone
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Release|iPhoneSimulator.ActiveCfg = Release|iPhoneSimulator
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Release|iPhoneSimulator.Build.0 = Release|iPhoneSimulator
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Debug|iPhone.ActiveCfg = Debug|iPhone
+		{ABB72AC8-4309-440A-AF70-7E5E900261A9}.Debug|iPhone.Build.0 = Debug|iPhone
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Debug|iPhoneSimulator.ActiveCfg = Debug|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Debug|iPhoneSimulator.Build.0 = Debug|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Release|iPhone.ActiveCfg = Release|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Release|iPhone.Build.0 = Release|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Release|iPhoneSimulator.ActiveCfg = Release|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Release|iPhoneSimulator.Build.0 = Release|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Debug|iPhone.ActiveCfg = Debug|Any CPU
+		{B8B460D3-B360-4A1C-8C75-EF5029BD19AB}.Debug|iPhone.Build.0 = Debug|Any CPU
 	EndGlobalSection
 EndGlobal

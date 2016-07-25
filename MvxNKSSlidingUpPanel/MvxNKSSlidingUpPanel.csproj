@@ -67,6 +67,7 @@
     <Compile Include="MvxSlidingUpPanelController.cs" />
     <Compile Include="VisibilityViewState.cs" />
     <Compile Include="VisibilityViewStateEventArgs.cs" />
+    <Compile Include="MvxSlidingUpPanelControllerWithControllers.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
