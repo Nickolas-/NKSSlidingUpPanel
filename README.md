@@ -6,6 +6,11 @@ NKSSlidingUpPanel is an Xamarin iOS Sliding Up Panel library that allows to use 
 
 All API the same with ARSlidingPanel.
 
+For Mvvmcross added MvxNKSSlidingUpControllerWithController ( Yes, I know, then name is awful :) )
+
+There you can use UIViewControllers/MvxViewControllers for MainViewController and PanelViewController presentation. 
+Just add MvxTableViewController/UITableViewController to PanelViewController and magic will happen.
+
 Thanks [andriirogulin] (https://github.com/andriirogulin) for his work.
 
 # Enjoy
