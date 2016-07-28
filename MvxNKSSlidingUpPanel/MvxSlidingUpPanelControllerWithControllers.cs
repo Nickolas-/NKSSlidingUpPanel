@@ -412,32 +412,34 @@ namespace MvxNKSSlidingUpPanel
 				(otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (this._panelViewController as UITableViewController).TableView.PanGestureRecognizer);
 		}
 
-		public override void DidMoveToParentViewController (UIViewController parent)
-		{
-			if (parent == null && !this._isCleanedUp) {
-				CleanUp ();
-				this._isCleanedUp = true;
-			}
-			base.DidMoveToParentViewController (parent);
-		}
-
 		protected virtual void CleanUp ()
 		{
-			PanGestureRecognizer.RemoveTarget (_panGestureToken);
-			PanGestureRecognizer.Delegate = null;
-			if (MainViewController != null) {
-				MainViewController.RemoveFromParentViewController ();
-				if (MainViewController.View != null && MainViewController.View.Superview != null) {
-					MainViewController.View.RemoveFromSuperview ();
+			if (!this._isCleanedUp) {
+				PanGestureRecognizer.RemoveTarget (_panGestureToken);
+				PanGestureRecognizer.Delegate = null;
+				if (MainViewController != null) {
+					MainViewController.RemoveFromParentViewController ();
+					if (MainViewController.View != null && MainViewController.View.Superview != null) {
+						MainViewController.View.RemoveFromSuperview ();
+					}
 				}
-			}
-			if (PanelViewController != null) {
-				PanelViewController.RemoveFromParentViewController ();
-				if (PanelViewController.View != null && PanelViewController.View.Superview != null) {
-					PanelViewController.View.RemoveFromSuperview ();
-					PanelViewController.View.RemoveGestureRecognizer (PanGestureRecognizer);
+				if (PanelViewController != null) {
+					PanelViewController.RemoveFromParentViewController ();
+					if (PanelViewController.View != null && PanelViewController.View.Superview != null) {
+						PanelViewController.View.RemoveFromSuperview ();
+						PanelViewController.View.RemoveGestureRecognizer (PanGestureRecognizer);
+					}
 				}
+				this._isCleanedUp = true;
 			}
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				CleanUp ();
+			}
+			base.Dispose (disposing);
 		}
 	}
 

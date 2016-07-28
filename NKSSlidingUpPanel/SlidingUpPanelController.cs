@@ -389,26 +389,28 @@ namespace NKSSlidingUpPanel
 														  (otherGestureRecognizer == PanGestureRecognizer || otherGestureRecognizer == (_panelView as UIScrollView).PanGestureRecognizer);
 		}
 
-		public override void DidMoveToParentViewController (UIViewController parent)
-		{
-			if (parent == null && !this._isCleanedUp) {
-				CleanUp ();
-				this._isCleanedUp = true;
-			}
-			base.DidMoveToParentViewController (parent);
-		}
-
 		protected virtual void CleanUp ()
 		{
-			PanGestureRecognizer.RemoveTarget (_panGestureToken);
-			PanGestureRecognizer.Delegate = null;
-			if (MainView != null) {
-				MainView.RemoveFromSuperview ();
+			if (!this._isCleanedUp) {
+				PanGestureRecognizer.RemoveTarget (_panGestureToken);
+				PanGestureRecognizer.Delegate = null;
+				if (MainView != null) {
+					MainView.RemoveFromSuperview ();
+				}
+				if (PanelView != null) {
+					PanelView.RemoveFromSuperview ();
+					PanelView.RemoveGestureRecognizer (PanGestureRecognizer);
+				}
+				this._isCleanedUp = true;
 			}
-			if (PanelView != null) {
-				PanelView.RemoveFromSuperview ();
-				PanelView.RemoveGestureRecognizer (PanGestureRecognizer);
+		}
+
+		protected override void Dispose (bool disposing)
+		{
+			if (disposing) {
+				CleanUp ();
 			}
+			base.Dispose (disposing);
 		}
 	}
 }
