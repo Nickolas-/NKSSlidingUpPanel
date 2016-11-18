@@ -1,6 +1,6 @@
 # NKSSlidingUpPanel
 
-NKSSlidingUpPanel is an Xamarin iOS Sliding Up Panel library that allows to use 'Google Maps' or 'Google Play Music' like Android Slidin Up Panel control in your applications. A little bit modified from [ARSlidingPanel](https://github.com/andriirogulin/ARSlidingPanel) to use panel view with UIScrollView, but all principles are still the same.
+NKSSlidingUpPanel is an Xamarin iOS Sliding Up Panel library that allows to use like 'Google Maps' or 'Google Play Music' Android Slidin Up Panel control in your applications. A little bit modified from [ARSlidingPanel](https://github.com/andriirogulin/ARSlidingPanel) to use panel view with UIScrollView, but all principles are still the same.
 
 <img src="https://github.com/Nickolas-/NKSSlidingUpPanel/blob/master/SlidingDemo/SlidingDemo.gif" width="414" height="736">
 
